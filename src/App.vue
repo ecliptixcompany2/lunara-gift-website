@@ -5,6 +5,55 @@
     @touchend="handleTouchEnd"
     @wheel.prevent="handleWheel"
   >
+
+    <!-- ========================= -->
+    <!-- MUSIC -->
+    <!-- ========================= -->
+
+    <audio
+      ref="audioPlayer"
+      loop
+      preload="auto"
+    >
+      <source
+        src="/music.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+
+
+    <!-- ========================= -->
+    <!-- MUSIC BUTTON -->
+    <!-- ========================= -->
+
+    <button
+      class="music-button"
+      :class="{ playing: isPlaying }"
+      @click="toggleMusic"
+      aria-label="Play or pause music"
+    >
+
+      <!-- MUSIC OFF -->
+      <span v-if="!isPlaying">
+        ♫
+      </span>
+
+
+      <!-- MUSIC ON -->
+      <span
+        v-else
+        class="music-playing-icon"
+      >
+        ♫
+      </span>
+
+    </button>
+
+
+    <!-- ========================= -->
+    <!-- PAGES -->
+    <!-- ========================= -->
+
     <div
       class="pages-container"
       :style="{
@@ -48,6 +97,7 @@
       </section>
 
     </div>
+
   </main>
 </template>
 
@@ -56,10 +106,61 @@
 
 import { ref } from 'vue'
 
+
+/* =========================
+   PAGES
+========================= */
+
 import PagesOne from './pages/PagesOne.vue'
 import PagesTwo from './pages/PagesTwo.vue'
 import PagesThree from './pages/PagesThree.vue'
 import PagesFour from './pages/PagesFour.vue'
+
+
+/* =========================
+   MUSIC
+========================= */
+
+const audioPlayer = ref(null)
+
+const isPlaying = ref(false)
+
+
+const toggleMusic = async () => {
+
+  if (!audioPlayer.value) return
+
+
+  if (isPlaying.value) {
+
+    audioPlayer.value.pause()
+
+    isPlaying.value = false
+
+  }
+
+  else {
+
+    try {
+
+      await audioPlayer.value.play()
+
+      isPlaying.value = true
+
+    }
+
+    catch (error) {
+
+      console.error(
+        'Music cannot be played:',
+        error
+      )
+
+    }
+
+  }
+
+}
 
 
 /* =========================
@@ -96,7 +197,8 @@ let isMoving = false
 
 const handleTouchStart = (event) => {
 
-  touchStartY = event.touches[0].clientY
+  touchStartY =
+    event.touches[0].clientY
 
 }
 
@@ -119,10 +221,7 @@ const handleTouchEnd = (event) => {
 
 
   /*
-    Minimal jarak swipe.
-
-    Jika terlalu kecil,
-    tidak dianggap sebagai swipe.
+    Minimal jarak swipe
   */
 
   const minimumSwipeDistance = 60
@@ -169,8 +268,7 @@ const nextPage = () => {
 
 
   /*
-    Jika sudah halaman terakhir,
-    jangan lanjut
+    Jika sudah halaman terakhir
   */
 
   if (
@@ -184,21 +282,21 @@ const nextPage = () => {
 
 
   /*
-    Lock
+    Lock perpindahan
   */
 
   isMoving = true
 
 
   /*
-    Pindah hanya satu halaman
+    Pindah tepat satu halaman
   */
 
   currentPage.value += 1
 
 
   /*
-    Unlock setelah animasi selesai
+    Unlock setelah animasi
   */
 
   setTimeout(() => {
@@ -217,8 +315,7 @@ const nextPage = () => {
 const previousPage = () => {
 
   /*
-    Jika sedang animasi,
-    jangan menerima swipe baru
+    Mencegah swipe ganda
   */
 
   if (isMoving) return
@@ -245,14 +342,14 @@ const previousPage = () => {
 
 
   /*
-    Mundur hanya satu halaman
+    Mundur satu halaman
   */
 
   currentPage.value -= 1
 
 
   /*
-    Unlock
+    Unlock setelah animasi
   */
 
   setTimeout(() => {
@@ -266,7 +363,7 @@ const previousPage = () => {
 
 /* =========================
    MOUSE WHEEL
-   UNTUK TESTING LAPTOP
+   UNTUK LAPTOP
 ========================= */
 
 const handleWheel = (event) => {
@@ -370,35 +467,166 @@ body {
 
   width: 100%;
 
-  /*
-    PENTING:
-
-    Gunakan dynamic viewport height.
-
-    Ini mengikuti tinggi area
-    yang benar-benar terlihat
-    pada iPhone Safari.
-  */
-
   height: 100dvh;
-
 
   overflow: hidden;
 
-
-  /*
-    Mencegah browser melakukan
-    scroll bawaan
-  */
-
   overscroll-behavior: none;
 
-
-  /*
-    Kita menangani swipe sendiri
-  */
-
   touch-action: pan-x;
+
+  position: relative;
+
+}
+
+
+/* =========================
+   MUSIC BUTTON
+========================= */
+
+.music-button {
+
+  position: fixed;
+
+  top: calc(
+    env(safe-area-inset-top) + 18px
+  );
+
+  right: 18px;
+
+  z-index: 9999;
+
+  width: 46px;
+
+  height: 46px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border:
+
+    1px solid
+    rgba(255, 235, 225, 0.35);
+
+  border-radius: 50%;
+
+  background:
+
+    rgba(70, 8, 15, 0.55);
+
+  backdrop-filter:
+
+    blur(10px);
+
+  -webkit-backdrop-filter:
+
+    blur(10px);
+
+  color:
+
+    #f3ded5;
+
+  font-size: 21px;
+
+  cursor: pointer;
+
+  transition:
+
+    transform 0.3s ease,
+    background 0.3s ease;
+
+}
+
+
+/* =========================
+   MUSIC BUTTON PLAYING
+========================= */
+
+.music-button.playing {
+
+  background:
+
+    rgba(110, 25, 35, 0.8);
+
+  animation:
+
+    musicPulse
+    2s
+    ease-in-out
+    infinite;
+
+}
+
+
+.music-button:active {
+
+  transform:
+
+    scale(0.9);
+
+}
+
+
+/* =========================
+   MUSIC ICON ANIMATION
+========================= */
+
+.music-playing-icon {
+
+  animation:
+
+    musicRotate
+    2.5s
+    linear
+    infinite;
+
+}
+
+
+@keyframes musicPulse {
+
+  0% {
+
+    transform:
+      scale(1);
+
+  }
+
+  50% {
+
+    transform:
+      scale(1.08);
+
+  }
+
+  100% {
+
+    transform:
+      scale(1);
+
+  }
+
+}
+
+
+@keyframes musicRotate {
+
+  from {
+
+    transform:
+      rotate(0deg);
+
+  }
+
+  to {
+
+    transform:
+      rotate(360deg);
+
+  }
 
 }
 
@@ -411,18 +639,9 @@ body {
 
   width: 100%;
 
-  /*
-    Semua halaman tersusun vertikal
-  */
-
   display: flex;
 
   flex-direction: column;
-
-
-  /*
-    Animasi perpindahan halaman
-  */
 
   transition:
 
@@ -434,11 +653,6 @@ body {
       0.175,
       1
     );
-
-
-  /*
-    Membuat animasi lebih halus
-  */
 
   will-change: transform;
 
@@ -453,28 +667,11 @@ body {
 
   width: 100%;
 
-
-  /*
-    INI BAGIAN PALING PENTING
-
-    Setiap halaman harus memiliki
-    tinggi PERSIS sama dengan
-    viewport aplikasi.
-  */
-
   height: 100dvh;
-
-
-  /*
-    Jangan menggunakan 100vh
-    atau 100svh di sini.
-  */
 
   flex-shrink: 0;
 
-
   overflow: hidden;
-
 
   position: relative;
 
