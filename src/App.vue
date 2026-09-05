@@ -3,17 +3,19 @@
     class="app"
     @touchstart="handleTouchStart"
     @touchend="handleTouchEnd"
-    @wheel="handleWheel"
+    @wheel.prevent="handleWheel"
   >
     <div
       class="pages-container"
       :style="{
-        transform: `translateY(-${currentPage * 100}vh)`
+        transform: `translate3d(0, -${currentPage * 100}dvh, 0)`
       }"
     >
+
       <!-- ========================= -->
       <!-- HALAMAN 1 -->
       <!-- ========================= -->
+
       <section class="page">
         <PagesOne />
       </section>
@@ -22,6 +24,7 @@
       <!-- ========================= -->
       <!-- HALAMAN 2 -->
       <!-- ========================= -->
+
       <section class="page">
         <PagesTwo />
       </section>
@@ -30,6 +33,7 @@
       <!-- ========================= -->
       <!-- HALAMAN 3 -->
       <!-- ========================= -->
+
       <section class="page">
         <PagesThree />
       </section>
@@ -38,8 +42,9 @@
       <!-- ========================= -->
       <!-- HALAMAN 4 -->
       <!-- ========================= -->
+
       <section class="page">
-              <PagesFour />
+        <PagesFour />
       </section>
 
     </div>
@@ -48,6 +53,7 @@
 
 
 <script setup>
+
 import { ref } from 'vue'
 
 import PagesOne from './pages/PagesOne.vue'
@@ -56,141 +62,239 @@ import PagesThree from './pages/PagesThree.vue'
 import PagesFour from './pages/PagesFour.vue'
 
 
-// ===============================
-// HALAMAN AKTIF
-// ===============================
+/* =========================
+   HALAMAN SAAT INI
+========================= */
 
 const currentPage = ref(0)
 
 
-// ===============================
-// JUMLAH HALAMAN
-// ===============================
+/* =========================
+   TOTAL HALAMAN
+========================= */
 
 const totalPages = 4
 
 
-// ===============================
-// TOUCH
-// ===============================
+/* =========================
+   TOUCH POSITION
+========================= */
 
 let touchStartY = 0
 
 
-// ===============================
-// LOCK ANIMASI
-// ===============================
+/* =========================
+   LOCK SWIPE
+========================= */
 
 let isMoving = false
 
-const animationDuration = 700
 
-
-// ===============================
-// PINDAH HALAMAN
-// ===============================
-
-const changePage = (direction) => {
-  // Jika animasi masih berjalan,
-  // jangan izinkan pindah lagi
-  if (isMoving) return
-
-  const nextPageNumber = currentPage.value + direction
-
-
-  // Jangan melewati halaman pertama/terakhir
-  if (
-    nextPageNumber < 0 ||
-    nextPageNumber >= totalPages
-  ) {
-    return
-  }
-
-
-  // Kunci perpindahan
-  isMoving = true
-
-  // Pindah halaman
-  currentPage.value = nextPageNumber
-
-
-  // Buka kembali setelah animasi selesai
-  setTimeout(() => {
-    isMoving = false
-  }, animationDuration)
-}
-
-
-// ===============================
-// TOUCH START
-// ===============================
+/* =========================
+   TOUCH START
+========================= */
 
 const handleTouchStart = (event) => {
+
   touchStartY = event.touches[0].clientY
+
 }
 
 
-// ===============================
-// TOUCH END
-// ===============================
+/* =========================
+   TOUCH END
+========================= */
 
 const handleTouchEnd = (event) => {
+
   if (isMoving) return
+
 
   const touchEndY =
     event.changedTouches[0].clientY
+
 
   const distance =
     touchStartY - touchEndY
 
 
-  // Minimal jarak swipe
-  const minimumSwipeDistance = 70
+  /*
+    Minimal jarak swipe.
+
+    Jika terlalu kecil,
+    tidak dianggap sebagai swipe.
+  */
+
+  const minimumSwipeDistance = 60
 
 
-  // Swipe ke atas
+  /* =========================
+     SWIPE KE ATAS
+  ========================= */
+
   if (distance > minimumSwipeDistance) {
-    changePage(1)
+
+    nextPage()
+
+    return
+
   }
 
 
-  // Swipe ke bawah
+  /* =========================
+     SWIPE KE BAWAH
+  ========================= */
+
   if (distance < -minimumSwipeDistance) {
-    changePage(-1)
+
+    previousPage()
+
   }
+
 }
 
 
-// ===============================
-// MOUSE WHEEL
-// ===============================
+/* =========================
+   NEXT PAGE
+========================= */
 
-const handleWheel = (event) => {
-  // Jangan pindah jika sedang animasi
+const nextPage = () => {
+
+  /*
+    Mencegah satu swipe
+    memindahkan beberapa halaman
+  */
+
   if (isMoving) return
 
 
-  // Jangan bereaksi terhadap scroll kecil
-  const minimumWheelDistance = 30
+  /*
+    Jika sudah halaman terakhir,
+    jangan lanjut
+  */
 
   if (
-    Math.abs(event.deltaY) <
-    minimumWheelDistance
+    currentPage.value >=
+    totalPages - 1
   ) {
+
     return
+
   }
 
 
-  // Scroll ke bawah
+  /*
+    Lock
+  */
+
+  isMoving = true
+
+
+  /*
+    Pindah hanya satu halaman
+  */
+
+  currentPage.value += 1
+
+
+  /*
+    Unlock setelah animasi selesai
+  */
+
+  setTimeout(() => {
+
+    isMoving = false
+
+  }, 800)
+
+}
+
+
+/* =========================
+   PREVIOUS PAGE
+========================= */
+
+const previousPage = () => {
+
+  /*
+    Jika sedang animasi,
+    jangan menerima swipe baru
+  */
+
+  if (isMoving) return
+
+
+  /*
+    Jika sudah halaman pertama
+  */
+
+  if (
+    currentPage.value <= 0
+  ) {
+
+    return
+
+  }
+
+
+  /*
+    Lock
+  */
+
+  isMoving = true
+
+
+  /*
+    Mundur hanya satu halaman
+  */
+
+  currentPage.value -= 1
+
+
+  /*
+    Unlock
+  */
+
+  setTimeout(() => {
+
+    isMoving = false
+
+  }, 800)
+
+}
+
+
+/* =========================
+   MOUSE WHEEL
+   UNTUK TESTING LAPTOP
+========================= */
+
+const handleWheel = (event) => {
+
+  if (isMoving) return
+
+
+  /*
+    Scroll ke bawah
+  */
+
   if (event.deltaY > 0) {
-    changePage(1)
+
+    nextPage()
+
   }
 
 
-  // Scroll ke atas
-  if (event.deltaY < 0) {
-    changePage(-1)
+  /*
+    Scroll ke atas
+  */
+
+  else if (event.deltaY < 0) {
+
+    previousPage()
+
   }
+
 }
 
 </script>
@@ -198,118 +302,204 @@ const handleWheel = (event) => {
 
 <style>
 
-/* ========================================
-   GLOBAL RESET
-======================================== */
+/* =========================
+   RESET
+========================= */
 
 * {
+
   margin: 0;
+
   padding: 0;
+
   box-sizing: border-box;
+
 }
 
 
-/* ========================================
-   HTML BODY APP
-======================================== */
+/* =========================
+   HTML
+========================= */
 
-html,
-body,
-#app {
+html {
+
   width: 100%;
+
   height: 100%;
 
   overflow: hidden;
+
 }
 
 
-/* ========================================
-   MAIN APP
-======================================== */
+/* =========================
+   BODY
+========================= */
 
-.app {
+body {
+
   width: 100%;
-  height: 100vh;
-  height: 100svh;
+
+  height: 100%;
 
   overflow: hidden;
 
-  touch-action: none;
 }
 
 
-/* ========================================
-   PAGE CONTAINER
-======================================== */
+/* =========================
+   VUE APP
+========================= */
 
-.pages-container {
+#app {
+
   width: 100%;
 
+  height: 100%;
+
+  overflow: hidden;
+
+}
+
+
+/* =========================
+   MAIN APP
+========================= */
+
+.app {
+
+  width: 100%;
+
+  /*
+    PENTING:
+
+    Gunakan dynamic viewport height.
+
+    Ini mengikuti tinggi area
+    yang benar-benar terlihat
+    pada iPhone Safari.
+  */
+
+  height: 100dvh;
+
+
+  overflow: hidden;
+
+
+  /*
+    Mencegah browser melakukan
+    scroll bawaan
+  */
+
+  overscroll-behavior: none;
+
+
+  /*
+    Kita menangani swipe sendiri
+  */
+
+  touch-action: pan-x;
+
+}
+
+
+/* =========================
+   PAGES CONTAINER
+========================= */
+
+.pages-container {
+
+  width: 100%;
+
+  /*
+    Semua halaman tersusun vertikal
+  */
+
+  display: flex;
+
+  flex-direction: column;
+
+
+  /*
+    Animasi perpindahan halaman
+  */
+
   transition:
-    transform 0.7s cubic-bezier(
+
+    transform
+    0.8s
+    cubic-bezier(
       0.77,
       0,
       0.175,
       1
     );
 
+
+  /*
+    Membuat animasi lebih halus
+  */
+
   will-change: transform;
+
 }
 
 
-/* ========================================
-   EACH PAGE
-======================================== */
+/* =========================
+   SETIAP HALAMAN
+========================= */
 
 .page {
+
   width: 100%;
-  height: 100vh;
-  height: 100svh;
+
+
+  /*
+    INI BAGIAN PALING PENTING
+
+    Setiap halaman harus memiliki
+    tinggi PERSIS sama dengan
+    viewport aplikasi.
+  */
+
+  height: 100dvh;
+
+
+  /*
+    Jangan menggunakan 100vh
+    atau 100svh di sini.
+  */
+
+  flex-shrink: 0;
+
 
   overflow: hidden;
+
+
+  position: relative;
+
 }
 
 
-/* ========================================
-   TEMPORARY PAGE FOUR
-======================================== */
+/* =========================
+   MOBILE FALLBACK
+========================= */
 
-.coming-page {
-  width: 100%;
-  height: 100%;
+@supports not (height: 100dvh) {
 
-  display: flex;
-  flex-direction: column;
+  .app {
 
-  justify-content: center;
-  align-items: center;
+    height: 100vh;
 
-  color: white;
-
-  background: linear-gradient(
-    135deg,
-    #210407,
-    #4a0b12,
-    #220407
-  );
-}
+  }
 
 
-.coming-page h1 {
-  font-family: Georgia, serif;
+  .page {
 
-  font-size: 50px;
+    height: 100vh;
 
-  font-weight: 400;
-}
+  }
 
-
-.coming-page p {
-  margin-top: 10px;
-
-  font-size: 18px;
-
-  opacity: 0.7;
 }
 
 </style>

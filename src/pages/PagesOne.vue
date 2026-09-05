@@ -102,7 +102,7 @@ const coverPhoto = `${import.meta.env.BASE_URL}images/cover-photo.jpg`
   position: relative;
 
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
   min-height: 100svh;
 
   overflow: hidden;
