@@ -1,114 +1,226 @@
 <template>
   <section class="page-four">
 
-    <!-- Background texture -->
-    <div class="noise"></div>
+    <!-- Background decorations -->
+    <div class="glow glow-one"></div>
+    <div class="glow glow-two"></div>
 
-    <!-- Decorative stars -->
     <div class="star star-one">✦</div>
     <div class="star star-two">✧</div>
     <div class="star star-three">✦</div>
 
-    <!-- Top decoration -->
-    <div class="top-decoration">
-      <span>♡</span>
+
+    <!-- ========================= -->
+    <!-- PROGRESS -->
+    <!-- ========================= -->
+
+    <div class="progress">
+
+      <span
+        v-for="item in totalSteps"
+        :key="item"
+        :class="{ active: currentStep >= item }"
+      ></span>
+
     </div>
 
 
-    <!-- MAIN CONTENT -->
-    <main class="ending-content">
+    <!-- ========================= -->
+    <!-- CONTENT -->
+    <!-- ========================= -->
 
-      <!-- Small text -->
-      <p class="small-title">
-        and if I had to choose again...
-      </p>
+    <transition name="fade" mode="out-in">
+
+      <!-- ========================= -->
+      <!-- STEP 1 -->
+      <!-- ========================= -->
+
+      <div
+        v-if="currentStep === 1"
+        key="step-one"
+        class="content"
+      >
+
+        <p class="eyebrow">
+          and if I had to choose again...
+        </p>
 
 
-      <!-- Main title -->
-      <h1>
-        I'd still
-        <span>choose you.</span>
-      </h1>
+        <h1 class="main-title">
+          I'd still
+          <span>choose you.</span>
+        </h1>
 
 
-      <!-- Heart -->
-      <div class="main-heart">
-        ♡
+        <div class="heart-large">
+          ♡
+        </div>
+
+
+        <p class="small-message">
+          In a world full of possibilities,
+          somehow my heart would still
+          find its way back to you.
+        </p>
+
+
+        <button
+          class="next-button"
+          @click="nextStep"
+        >
+
+          <span>continue</span>
+
+          <i>→</i>
+
+        </button>
+
       </div>
 
 
-      <!-- Message -->
-      <div class="message">
+      <!-- ========================= -->
+      <!-- STEP 2 -->
+      <!-- ========================= -->
 
-        <p>
-          Not because everything is always perfect,
+      <div
+        v-else-if="currentStep === 2"
+        key="step-two"
+        class="content"
+      >
+
+        <div class="heart-top">
+          ♡
+        </div>
+
+
+        <p class="message">
+          Not because everything
+          is always perfect,
         </p>
 
-        <p>
+
+        <p class="message">
           but because somehow,
           among all the possibilities
           in this world,
         </p>
 
-        <p class="highlight">
-          you are still my favorite one.
-        </p>
+
+        <h2 class="favorite-text">
+          you are still
+          <br />
+          my favorite one.
+        </h2>
+
+
+        <div class="divider">
+
+          <span></span>
+
+          <b>♡</b>
+
+          <span></span>
+
+        </div>
+
+
+        <div class="button-group">
+
+          <button
+            class="back-button"
+            @click="previousStep"
+          >
+            ←
+          </button>
+
+
+          <button
+            class="next-button"
+            @click="nextStep"
+          >
+
+            <span>one more thing</span>
+
+            <i>→</i>
+
+          </button>
+
+        </div>
 
       </div>
 
 
-      <!-- Decorative line -->
-      <div class="divider">
-        <span></span>
-        <b>♡</b>
-        <span></span>
-      </div>
+      <!-- ========================= -->
+      <!-- STEP 3 -->
+      <!-- ========================= -->
+
+      <div
+        v-else
+        key="step-three"
+        class="content final-content"
+      >
+
+        <div class="heart-top">
+          ♡
+        </div>
 
 
-      <!-- Final quote -->
-      <div class="final-quote">
-
-        <p>
+        <p class="thank-you">
           Thank you for being
           <br />
           part of my story.
         </p>
 
-        <span>
+
+        <h2 class="hope-text">
           I hope I can stay
           <br />
           in yours too.
-        </span>
+        </h2>
+
+
+        <div class="small-divider">
+          ─── ♡ ───
+        </div>
+
+
+        <div class="signature">
+
+          <p>
+            with love,
+          </p>
+
+
+          <!-- GANTI DENGAN NAMA PENGIRIM -->
+          <h3>
+            someone who loves you
+          </h3>
+
+        </div>
+
+
+        <button
+          class="restart-button"
+          @click="restart"
+        >
+
+          ♡ read again
+
+        </button>
 
       </div>
 
-
-      <!-- Signature -->
-      <div class="signature">
-
-        <p>with love,</p>
-
-        <!-- Ubah bagian ini dengan nama pengirim -->
-        <h2>someone who loves you</h2>
-
-      </div>
-
-    </main>
+    </transition>
 
 
-    <!-- Bottom decoration -->
-    <div class="bottom-decoration">
+    <!-- ========================= -->
+    <!-- BOTTOM TEXT -->
+    <!-- ========================= -->
 
-      <div class="heart-line">
-        ─── ♡ ───
-      </div>
-
-      <p>
-        the end,
-        <span>or maybe just the beginning.</span>
-      </p>
-
-    </div>
+    <p class="bottom-text">
+      the end,
+      <span>or maybe just the beginning.</span>
+    </p>
 
   </section>
 </template>
@@ -116,205 +228,770 @@
 
 <script setup>
 
-/*
-|--------------------------------------------------------------------------
-| PAGE FOUR
-|--------------------------------------------------------------------------
-|
-| Halaman terakhir.
-|
-| Kamu bisa mengganti:
-|
-| "someone who loves you"
-|
-| dengan nama pengirim website.
-|
-*/
+import { ref } from 'vue'
+
+
+/* =========================
+   STEP
+========================= */
+
+const currentStep = ref(1)
+
+const totalSteps = 3
+
+
+/* =========================
+   NEXT
+========================= */
+
+const nextStep = () => {
+
+  if (
+    currentStep.value < totalSteps
+  ) {
+
+    currentStep.value++
+
+  }
+
+}
+
+
+/* =========================
+   PREVIOUS
+========================= */
+
+const previousStep = () => {
+
+  if (
+    currentStep.value > 1
+  ) {
+
+    currentStep.value--
+
+  }
+
+}
+
+
+/* =========================
+   RESTART
+========================= */
+
+const restart = () => {
+
+  currentStep.value = 1
+
+}
 
 </script>
 
 
 <style scoped>
 
+/* =========================
+   GOOGLE FONTS
+========================= */
+
 @import url(
   'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Great+Vibes&display=swap'
 );
 
 
-/* =====================================================
-   RESET
-===================================================== */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-
-/* =====================================================
+/* =========================
    MAIN PAGE
-===================================================== */
+========================= */
 
 .page-four {
+
   position: relative;
 
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
+
   min-height: 100svh;
 
   overflow: hidden;
 
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
 
-  padding: 45px 20px 35px;
+  justify-content: center;
 
-  color: #f2e5dc;
+  padding:
+
+    max(24px, env(safe-area-inset-top))
+
+    24px
+
+    max(24px, env(safe-area-inset-bottom));
+
+  color: #f3e5dc;
 
   background:
 
     radial-gradient(
       circle at 50% 20%,
-      rgba(120, 35, 45, 0.35),
-      transparent 35%
+      rgba(115, 30, 42, 0.45),
+      transparent 40%
     ),
 
     radial-gradient(
-      circle at 10% 85%,
-      rgba(100, 20, 30, 0.3),
-      transparent 35%
-    ),
-
-    radial-gradient(
-      circle at 90% 75%,
-      rgba(90, 15, 25, 0.25),
-      transparent 30%
+      circle at 10% 80%,
+      rgba(90, 10, 20, 0.3),
+      transparent 40%
     ),
 
     linear-gradient(
       135deg,
-      #1b0306,
-      #4a0b12 55%,
-      #210407
+      #250407,
+      #570c15,
+      #260407
     );
+
 }
 
 
-/* =====================================================
-   NOISE
-===================================================== */
+/* =========================
+   GLOW
+========================= */
 
-.noise {
+.glow {
+
   position: absolute;
 
-  inset: 0;
+  border-radius: 50%;
 
   pointer-events: none;
 
-  opacity: 0.16;
+  filter: blur(70px);
 
-  background-image:
-
-    radial-gradient(
-      rgba(255, 255, 255, 0.45) 0.5px,
-      transparent 0.8px
-    );
-
-  background-size: 4px 4px;
-
-  mix-blend-mode: soft-light;
 }
 
 
-/* =====================================================
-   DECORATIVE STARS
-===================================================== */
+.glow-one {
+
+  width: 250px;
+
+  height: 250px;
+
+  top: -100px;
+
+  right: -100px;
+
+  background:
+    rgba(150, 50, 60, 0.2);
+
+}
+
+
+.glow-two {
+
+  width: 220px;
+
+  height: 220px;
+
+  bottom: -120px;
+
+  left: -100px;
+
+  background:
+    rgba(120, 25, 40, 0.25);
+
+}
+
+
+/* =========================
+   STARS
+========================= */
 
 .star {
+
   position: absolute;
 
-  z-index: 2;
-
   color:
-    rgba(240, 220, 205, 0.4);
+    rgba(245, 220, 210, 0.45);
 
-  pointer-events: none;
 }
 
 
 .star-one {
-  top: 80px;
-  left: 12%;
+
+  top: 16%;
+
+  left: 10%;
 
   font-size: 20px;
+
 }
 
 
 .star-two {
-  top: 200px;
+
+  top: 25%;
+
   right: 10%;
 
-  font-size: 28px;
+  font-size: 26px;
+
 }
 
 
 .star-three {
-  bottom: 150px;
-  left: 8%;
+
+  bottom: 18%;
+
+  left: 12%;
 
   font-size: 18px;
+
 }
 
 
-/* =====================================================
-   TOP DECORATION
-===================================================== */
+/* =========================
+   PROGRESS
+========================= */
 
-.top-decoration {
-  position: relative;
+.progress {
 
-  z-index: 5;
+  position: absolute;
 
-  font-size: 38px;
+  top:
+    max(
+      24px,
+      env(safe-area-inset-top)
+    );
 
-  color:
-    rgba(240, 220, 205, 0.8);
+  left: 50%;
 
   transform:
-    rotate(-10deg);
+    translateX(-50%);
+
+  display: flex;
+
+  gap: 8px;
+
 }
 
 
-/* =====================================================
-   MAIN CONTENT
-===================================================== */
+.progress span {
 
-.ending-content {
+  width: 28px;
+
+  height: 2px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(255, 255, 255, 0.2);
+
+  transition:
+    0.4s ease;
+
+}
+
+
+.progress span.active {
+
+  background:
+    #ead5c8;
+
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.content {
+
   position: relative;
 
-  z-index: 5;
+  z-index: 2;
 
   width: 100%;
-  max-width: 500px;
+
+  max-width: 430px;
 
   display: flex;
+
   flex-direction: column;
 
   align-items: center;
 
   text-align: center;
 
-  margin-top: 25px;
 }
 
 
-/* =====================================================
-   SMALL TITLE
-===================================================== */
+/* =========================
+   STEP ONE
+========================= */
 
-.small-title {
+.eyebrow {
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(15px, 4vw, 19px);
+
+  font-style: italic;
+
+  letter-spacing: 2px;
+
+  color:
+    rgba(245, 225, 215, 0.75);
+
+}
+
+
+.main-title {
+
+  margin-top: 16px;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(58px, 15vw, 82px);
+
+  font-weight: 400;
+
+  line-height: 0.8;
+
+  color: #f2e1d7;
+
+}
+
+
+.main-title span {
+
+  display: block;
+
+  margin-top: 18px;
+
+  font-family:
+    "Great Vibes",
+    cursive;
+
+  font-size:
+    clamp(64px, 17vw, 95px);
+
+  color: #e9d2c4;
+
+  transform:
+    rotate(-4deg);
+
+}
+
+
+.heart-large {
+
+  margin-top: 35px;
+
+  font-size:
+    clamp(55px, 13vw, 75px);
+
+  line-height: 1;
+
+  color:
+    #f0ddd3;
+
+  animation:
+    heartbeat
+    2.5s
+    infinite;
+
+}
+
+
+.small-message {
+
+  max-width: 310px;
+
+  margin-top: 28px;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(17px, 4.5vw, 20px);
+
+  line-height: 1.5;
+
+  letter-spacing: 0.5px;
+
+  color:
+    rgba(245, 225, 215, 0.85);
+
+}
+
+
+/* =========================
+   HEART
+========================= */
+
+.heart-top {
+
+  margin-bottom: 30px;
+
+  font-size: 50px;
+
+  color:
+    #ecd8cd;
+
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+
+  margin-bottom: 18px;
+
+  max-width: 360px;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(19px, 5vw, 24px);
+
+  line-height: 1.4;
+
+  letter-spacing: 0.8px;
+
+  color:
+    rgba(245, 225, 215, 0.9);
+
+}
+
+
+.favorite-text {
+
+  margin-top: 14px;
+
+  font-family:
+    "Great Vibes",
+    cursive;
+
+  font-size:
+    clamp(42px, 11vw, 62px);
+
+  font-weight: 400;
+
+  line-height: 1.1;
+
+  color: #f0d8ca;
+
+}
+
+
+/* =========================
+   DIVIDER
+========================= */
+
+.divider {
+
+  width: 100%;
+
+  margin: 35px 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 15px;
+
+}
+
+
+.divider span {
+
+  width: 100px;
+
+  height: 1px;
+
+  background:
+    rgba(240, 220, 210, 0.45);
+
+}
+
+
+.divider b {
+
+  font-size: 27px;
+
+  font-weight: 400;
+
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+.next-button {
+
+  margin-top: 32px;
+
+  padding:
+    12px
+    18px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  border: 1px solid
+    rgba(240, 220, 210, 0.4);
+
+  border-radius: 50px;
+
+  color: #f1ded4;
+
+  background:
+    rgba(255, 255, 255, 0.04);
+
+  backdrop-filter:
+    blur(10px);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 17px;
+
+  cursor: pointer;
+
+  transition:
+    0.3s ease;
+
+}
+
+
+.next-button:active {
+
+  transform:
+    scale(0.95);
+
+  background:
+    rgba(255, 255, 255, 0.12);
+
+}
+
+
+.next-button i {
+
+  font-size: 20px;
+
+  font-style: normal;
+
+}
+
+
+/* =========================
+   BUTTON GROUP
+========================= */
+
+.button-group {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+}
+
+
+.button-group .next-button {
+
+  margin-top: 0;
+
+}
+
+
+.back-button {
+
+  width: 45px;
+
+  height: 45px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(240, 220, 210, 0.35);
+
+  background:
+    transparent;
+
+  color:
+    #f0d8ca;
+
+  font-size: 20px;
+
+  cursor: pointer;
+
+}
+
+
+.back-button:active {
+
+  transform:
+    scale(0.92);
+
+}
+
+
+/* =========================
+   FINAL PAGE
+========================= */
+
+.final-content {
+
+  justify-content: center;
+
+}
+
+
+.thank-you {
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(24px, 6vw, 32px);
+
+  line-height: 1.4;
+
+  letter-spacing: 1px;
+
+  color:
+    #f0ded4;
+
+}
+
+
+.hope-text {
+
+  margin-top: 25px;
+
+  font-family:
+    "Great Vibes",
+    cursive;
+
+  font-size:
+    clamp(43px, 11vw, 62px);
+
+  font-weight: 400;
+
+  line-height: 1.1;
+
+  color:
+    #efd7c8;
+
+}
+
+
+.small-divider {
+
+  margin: 35px 0;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 20px;
+
+  letter-spacing: 4px;
+
+  color:
+    rgba(240, 220, 210, 0.7);
+
+}
+
+
+/* =========================
+   SIGNATURE
+========================= */
+
+.signature p {
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 17px;
+
+  font-style: italic;
+
+  letter-spacing: 1px;
+
+  color:
+    rgba(240, 220, 210, 0.7);
+
+}
+
+
+.signature h3 {
+
+  margin-top: 10px;
+
+  font-family:
+    "Great Vibes",
+    cursive;
+
+  font-size:
+    clamp(34px, 9vw, 50px);
+
+  font-weight: 400;
+
+  color:
+    #f0d8ca;
+
+}
+
+
+/* =========================
+   RESTART
+========================= */
+
+.restart-button {
+
+  margin-top: 32px;
+
+  padding:
+    11px
+    20px;
+
+  border:
+    1px solid
+    rgba(240, 220, 210, 0.35);
+
+  border-radius: 50px;
+
+  color:
+    #f0ded4;
+
+  background:
+    rgba(255, 255, 255, 0.04);
 
   font-family:
     "Cormorant Garamond",
@@ -322,79 +999,72 @@
 
   font-size: 16px;
 
-  font-style: italic;
+  cursor: pointer;
 
-  letter-spacing: 2px;
-
-  color:
-    rgba(240, 220, 205, 0.75);
 }
 
 
-/* =====================================================
-   MAIN TITLE
-===================================================== */
+.restart-button:active {
 
-.ending-content h1 {
+  transform:
+    scale(0.95);
 
-  margin-top: 15px;
+}
+
+
+/* =========================
+   BOTTOM TEXT
+========================= */
+
+.bottom-text {
+
+  position: absolute;
+
+  bottom:
+    max(
+      22px,
+      env(safe-area-inset-bottom)
+    );
+
+  left: 50%;
+
+  transform:
+    translateX(-50%);
+
+  width: 100%;
+
+  text-align: center;
 
   font-family:
     "Cormorant Garamond",
     serif;
 
-  font-size:
-    clamp(55px, 11vw, 95px);
+  font-size: 13px;
 
-  font-weight: 400;
-
-  line-height: 0.85;
+  font-style: italic;
 
   letter-spacing: 1px;
 
-  color: #f2e2d6;
+  color:
+    rgba(240, 220, 210, 0.55);
+
 }
 
 
-.ending-content h1 span {
-
-  display: block;
-
-  margin-top: 15px;
+.bottom-text span {
 
   font-family:
     "Great Vibes",
     cursive;
 
-  font-size:
-    clamp(60px, 13vw, 110px);
+  font-size: 18px;
 
-  font-weight: 400;
-
-  color: #e8d2c4;
-
-  transform:
-    rotate(-4deg);
 }
 
 
-/* =====================================================
-   MAIN HEART
-===================================================== */
-
-.main-heart {
-
-  margin-top: 25px;
-
-  font-size: 48px;
-
-  color:
-    rgba(240, 220, 205, 0.9);
-
-  animation:
-    heartbeat 2.5s ease-in-out infinite;
-}
-
+/* =========================
+   ANIMATION
+========================= */
 
 @keyframes heartbeat {
 
@@ -413,364 +1083,110 @@
 }
 
 
-/* =====================================================
-   MESSAGE
-===================================================== */
+.fade-enter-active,
+.fade-leave-active {
 
-.message {
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 
-  margin-top: 22px;
-
-  max-width: 340px;
 }
 
 
-.message p {
+.fade-enter-from {
 
-  margin-bottom: 12px;
-
-  font-family:
-    "Cormorant Garamond",
-    serif;
-
-  font-size: 18px;
-
-  line-height: 1.35;
-
-  letter-spacing: 0.7px;
-
-  color:
-    rgba(242, 225, 215, 0.9);
-}
-
-
-.message .highlight {
-
-  margin-top: 18px;
-
-  font-family:
-    "Great Vibes",
-    cursive;
-
-  font-size: 32px;
-
-  line-height: 1.1;
-
-  color: #f0d8c8;
-}
-
-
-/* =====================================================
-   DIVIDER
-===================================================== */
-
-.divider {
-
-  width: 100%;
-
-  max-width: 230px;
-
-  margin: 25px 0;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 12px;
-}
-
-
-.divider span {
-
-  width: 70px;
-
-  height: 1px;
-
-  background:
-    rgba(240, 220, 205, 0.45);
-}
-
-
-.divider b {
-
-  font-size: 23px;
-
-  font-weight: 400;
-
-  color:
-    rgba(240, 220, 205, 0.8);
-}
-
-
-/* =====================================================
-   FINAL QUOTE
-===================================================== */
-
-.final-quote p {
-
-  font-family:
-    "Cormorant Garamond",
-    serif;
-
-  font-size: 19px;
-
-  line-height: 1.35;
-
-  letter-spacing: 1px;
-
-  color:
-    rgba(242, 225, 215, 0.9);
-}
-
-
-.final-quote span {
-
-  display: block;
-
-  margin-top: 12px;
-
-  font-family:
-    "Great Vibes",
-    cursive;
-
-  font-size: 34px;
-
-  line-height: 1.1;
-
-  color: #e9d3c5;
-}
-
-
-/* =====================================================
-   SIGNATURE
-===================================================== */
-
-.signature {
-
-  margin-top: 30px;
-
-  text-align: center;
-}
-
-
-.signature p {
-
-  font-family:
-    "Cormorant Garamond",
-    serif;
-
-  font-size: 14px;
-
-  font-style: italic;
-
-  letter-spacing: 1px;
-
-  color:
-    rgba(240, 220, 205, 0.7);
-}
-
-
-.signature h2 {
-
-  margin-top: 5px;
-
-  font-family:
-    "Great Vibes",
-    cursive;
-
-  font-size: 34px;
-
-  font-weight: 400;
-
-  color: #f0d9cb;
-}
-
-
-/* =====================================================
-   BOTTOM DECORATION
-===================================================== */
-
-.bottom-decoration {
-
-  position: absolute;
-
-  z-index: 5;
-
-  bottom: 25px;
-
-  left: 50%;
-
-  width: 100%;
+  opacity: 0;
 
   transform:
-    translateX(-50%);
-
-  text-align: center;
-}
-
-
-.heart-line {
-
-  font-family:
-    "Cormorant Garamond",
-    serif;
-
-  font-size: 18px;
-
-  letter-spacing: 3px;
-
-  color:
-    rgba(240, 220, 205, 0.65);
-}
-
-
-.bottom-decoration p {
-
-  margin-top: 8px;
-
-  font-family:
-    "Cormorant Garamond",
-    serif;
-
-  font-size: 13px;
-
-  font-style: italic;
-
-  letter-spacing: 1px;
-
-  color:
-    rgba(240, 220, 205, 0.6);
-}
-
-
-.bottom-decoration p span {
-
-  font-family:
-    "Great Vibes",
-    cursive;
-
-  font-size: 19px;
-
-  color:
-    rgba(240, 220, 205, 0.75);
-}
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width: 480px) {
-
-  .page-four {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-
-
-  .message p {
-    font-size: 16px;
-  }
-
-
-  .final-quote p {
-    font-size: 17px;
-  }
+    translateY(20px);
 
 }
 
 
-/* =====================================================
-   SHORT SCREEN
-===================================================== */
+.fade-leave-to {
 
-@media (max-height: 800px) {
+  opacity: 0;
 
-  .page-four {
-    padding-top: 20px;
-  }
+  transform:
+    translateY(-20px);
 
-
-  .ending-content {
-    margin-top: 12px;
-  }
+}
 
 
-  .top-decoration {
-    font-size: 30px;
-  }
+/* =========================
+   VERY SHORT MOBILE SCREEN
+========================= */
 
+@media (max-height: 650px) {
 
-  .small-title {
-    font-size: 13px;
-  }
+  .heart-large {
 
+    margin-top: 20px;
 
-  .ending-content h1 {
     font-size: 48px;
+
   }
 
 
-  .ending-content h1 span {
-    font-size: 60px;
+  .small-message {
+
+    margin-top: 18px;
+
+    font-size: 16px;
+
   }
 
 
-  .main-heart {
-    margin-top: 15px;
+  .next-button {
 
-    font-size: 35px;
+    margin-top: 20px;
+
+  }
+
+
+  .heart-top {
+
+    margin-bottom: 18px;
+
+    font-size: 38px;
+
   }
 
 
   .message {
-    margin-top: 15px;
-  }
 
+    margin-bottom: 10px;
 
-  .message p {
-    margin-bottom: 8px;
+    font-size: 18px;
 
-    font-size: 14px;
-  }
-
-
-  .message .highlight {
-    margin-top: 10px;
-
-    font-size: 27px;
   }
 
 
   .divider {
-    margin: 15px 0;
+
+    margin: 20px 0;
+
   }
 
 
-  .final-quote p {
-    font-size: 15px;
+  .small-divider {
+
+    margin: 22px 0;
+
   }
 
 
-  .final-quote span {
-    font-size: 27px;
+  .hope-text {
+
+    margin-top: 15px;
+
   }
 
 
-  .signature {
-    margin-top: 18px;
-  }
+  .restart-button {
 
+    margin-top: 20px;
 
-  .signature h2 {
-    font-size: 28px;
-  }
-
-
-  .bottom-decoration {
-    bottom: 12px;
   }
 
 }
